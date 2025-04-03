@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="jdbcex@localhost" uuid="8a6fb6bc-54f1-41f6-9f3a-276718600eb4">
+    <data-source source="LOCAL" name="SDM_HW1@localhost" uuid="e3530283-1165-4732-8aa2-b9cc3d6dc59c">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mariadb://localhost:3306/jdbcex</jdbc-url>
+      <jdbc-url>jdbc:mariadb://localhost:3306/SDM_HW1</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />

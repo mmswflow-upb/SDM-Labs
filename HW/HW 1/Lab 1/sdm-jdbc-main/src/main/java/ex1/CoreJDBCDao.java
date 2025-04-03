@@ -8,7 +8,7 @@ public class CoreJDBCDao {
     protected Connection connection;
     CoreJDBCDao(){
         try {
-            String url = "jdbc:mariadb://localhost:3306/jdbcex";
+            String url = "jdbc:mariadb://localhost:3306/sdm_hw1";
             String user = "root";
             String password = "root";
             connection = DriverManager.getConnection(url, user, password);
