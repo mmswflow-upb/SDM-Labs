@@ -7,22 +7,25 @@ public class MyClient {
     public static void main(String[] args) throws IOException {
         final int PORT = 5000;
         Socket socket = new Socket("localhost", PORT);
-        System.out.println("socket = " + socket);
+        System.out.println("Connected to server: " + socket);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
 
-        for (int i = 1; i <= 10; i++) {
-            String message = "I am " + i;
-            out.println(message);
+        System.out.println("Type messages to send to the server. Type 'END' to finish.");
+
+        String userInput;
+        while ((userInput = consoleReader.readLine()) != null) {
+            out.println(userInput);
             String response = in.readLine();
             System.out.println("Received from server: " + response);
+            if ("END".equalsIgnoreCase(userInput)) {
+                break;
+            }
         }
 
-        out.println("END");
-        String endResponse = in.readLine();
-        System.out.println("Received from server: " + endResponse);
-
         socket.close();
+        System.out.println("Connection closed.");
     }
 }
