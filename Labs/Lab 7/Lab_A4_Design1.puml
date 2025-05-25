@@ -1,0 +1,32 @@
+@startuml AnimalStatechart
+
+[*] --> InPaddock
+
+' RFID scan self-loop
+InPaddock --> InPaddock : scanEvent(tagID)\n/ updateLastSeen()
+
+' Timeout
+InPaddock -down-> Missing : after(thresholdInterval)\n[noScanSince(lastSeen)]\n/ raiseMissingAlert()
+
+' Recovery
+Missing --> InPaddock : scanEvent(tagID)\n/ clearMissingAlert()
+
+' Relocate requests
+InPaddock -left-> Relocating  : relocateRequest(id)\n[target.capacity>0]\n/ reserveSpace(id)
+Missing   -left-> Relocating  : relocateRequest(id)\n[target.capacity>0]\n/ reserveSpace(id)
+
+state Relocating <<composite>> {
+  [*] --> LeavingPaddock
+  LeavingPaddock --> InTransit        : onRelocateRequest()\n/ lockGates()
+  InTransit       --> EnteringPaddock : onArrivalAtDestination()\n/ unlockGates()
+}
+
+' return to InPaddock after relocation
+Relocating -up-> InPaddock : onCompleteRelocation()\n/ logMovementHistory()
+
+' Death transitions
+Missing   -down-> Removed  : onDeath()\n/ archiveAnimal()
+InPaddock -down-> Removed  : onDeath()\n/ archiveAnimal()
+Removed --> [*]
+
+@enduml

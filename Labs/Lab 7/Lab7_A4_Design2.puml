@@ -1,0 +1,42 @@
+@startuml AnimalStatechart
+'---------------------------------
+'  Global style tweaks (optional)
+'---------------------------------
+skinparam state {
+  Padding 8
+  BackgroundColor white
+  BorderColor black
+}
+
+[*] --> InPaddock
+
+'–– RFID scan self-loop ––
+InPaddock --> InPaddock : scanEvent(tagID)\n/ updateLastSeen()
+
+'–– Timeout to Missing ––
+InPaddock -down-> Missing : after(thresholdInterval)\n[noScanSince(lastSeen)]\n/ raiseMissingAlert()
+
+'–– Recovery scan ––
+Missing --> InPaddock : scanEvent(tagID)\n/ clearMissingAlert()
+
+'–– Relocate requests ––
+InPaddock -left-> Relocating : relocateRequest(id)\n[target.cap>0]\n/ reserveSpace(id)
+Missing   -left-> Relocating : relocateRequest(id)\n[target.cap>0]\n/ reserveSpace(id)
+
+'–––– Composite Relocating ––––
+state Relocating <<composite>> {
+  [*] --> LeavingPaddock
+  LeavingPaddock --> InTransit        : onRelocateRequest()\n/ lockGates()
+  InTransit       --> EnteringPaddock : onArrivalAtDestination()\n/ unlockGates()
+
+  ' Return arrow starts on EnteringPaddock so the reader
+  ' sees exactly when the animal is declared back “InPaddock”.
+  EnteringPaddock -up-> InPaddock : onCompleteRelocation()\n/ logMovementHistory()
+}
+
+'–– Death transitions ––
+Missing   -down-> Removed : onDeath()\n/ archiveAnimal()
+InPaddock -down-> Removed : onDeath()\n/ archiveAnimal()
+Removed --> [*]
+
+@enduml
